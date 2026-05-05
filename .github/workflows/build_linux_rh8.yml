@@ -1,4 +1,4 @@
-name: linux-embedr-build
+name: linux-rh8-embedr-build
 
 on:
   workflow_dispatch:
@@ -24,6 +24,7 @@ jobs:
     steps:
       - name: Install build tools
         run: |
+          yum update -y &&
           yum -y install \
             epel-release \
             gcc \

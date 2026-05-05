@@ -1,0 +1,28 @@
+name: linux-r-embedr-build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: r-base:4.6.0
+
+    env:
+      QHOME: ${{ github.workspace }}/qhome
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Build
+        run: make
