@@ -50,17 +50,15 @@ jobs:
 
       - name: Show R installation
         shell: cmd
-        env:
-          PATH: C:\R\bin;C:\R\bin\x64;%PATH%
         run: |
+          set PATH=C:\R\bin;C:\R\bin\x64;%PATH%
           R.exe --version
           R.exe RHOME
 
       - name: Build embedr.dll
         shell: cmd
-        env:
-          PATH: C:\R\bin;C:\R\bin\x64;%PATH%
         run: |
+          set PATH=C:\R\bin;C:\R\bin\x64;%PATH%
           mkdir %Q_ARCH%
           R.exe CMD SHLIB -o %Q_ARCH%/embedr.dll embedr.c src/%Q_ARCH%/q.a -lws2_32
 
