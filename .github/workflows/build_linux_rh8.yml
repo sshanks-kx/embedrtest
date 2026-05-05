@@ -26,7 +26,6 @@ jobs:
         run: |
           yum update -y &&
           yum -y install \
-            epel-release \
             gcc \
             make \
             wget \
@@ -34,7 +33,8 @@ jobs:
             gzip
 
       - name: Install R
-        run: dnf -y install dnf-plugins-core && dnf config-manager --set-enabled crb && dnf -y install epel-release && dnf clean all && dnf makecache && dnf -y install R
+        - name: Install R
+        run: dnf -y install dnf-plugins-core && dnf config-manager --set-enabled powertools && dnf -y install epel-release && dnf clean all && dnf makecache && dnf -y install R
 
       - name: Checkout code
         uses: actions/checkout@v5

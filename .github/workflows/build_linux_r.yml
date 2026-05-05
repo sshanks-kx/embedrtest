@@ -14,8 +14,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        r-image:
+          - r-base:4.6.0
+          - r-base:4.5.3
+          - r-base:4.4.3
+
     container:
-      image: r-base:4.6.0
+      image: ${{ matrix.r-image }}
 
     env:
       QHOME: ${{ github.workspace }}/qhome
