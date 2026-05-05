@@ -51,14 +51,18 @@ jobs:
       - name: Show R installation
         shell: cmd
         run: |
-          set PATH=C:\R\bin;C:\R\bin\x64;%PATH%
+          echo Checking R installation...
+          dir C:\R\bin 2>nul || echo R bin directory not found
+          dir C:\R\bin\x64 2>nul || echo R bin\x64 directory not found
+          where R.exe
           R.exe --version
           R.exe RHOME
 
       - name: Build embedr.dll
         shell: cmd
         run: |
-          set PATH=C:\R\bin;C:\R\bin\x64;%PATH%
+          for /f "delims=" %%i in ('R.exe RHOME') do set R_HOME=%%i
+          set PATH=%R_HOME%\bin;%R_HOME%\bin\x64;%PATH%
           mkdir %Q_ARCH%
           R.exe CMD SHLIB -o %Q_ARCH%/embedr.dll embedr.c src/%Q_ARCH%/q.a -lws2_32
 
