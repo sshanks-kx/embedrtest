@@ -1,6 +1,18 @@
+name: win-embedr-build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  release:
+    types: [created]
+
 jobs:
   build-windows:
-    name: Windows ${{ matrix.bits }}-bit
+    name: Windows 64-bit
     runs-on: windows-latest
 
     env:
