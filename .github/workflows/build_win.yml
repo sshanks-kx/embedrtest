@@ -15,22 +15,19 @@ permissions:
 
 jobs:
   build-windows:
-    name: Windows ${{ matrix.bits }}-bit
+    name: Windows 64-bit
     runs-on: windows-latest
 
     env:
       BITS: 64
       R_ARCH: x64
       Q_ARCH: w64
-      R_HOME: C:\R\
+      R_HOME: C:\R
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # R 4.1.x is intentional here: R for Windows 4.2+ dropped 32-bit/i386 support.
-      # The old AppVeyor matrix built both x64 and i386, so use an R release that still
-      # includes both architectures.
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
@@ -80,6 +77,6 @@ jobs:
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: embedr_win${{ matrix.bits }}
+          name: embedr_win64
           path: embedr_win*.zip
           if-no-files-found: error
