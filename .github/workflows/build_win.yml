@@ -41,7 +41,7 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path w64 | Out-Null
-          & C:\R\bin\x64\R.exe CMD SHLIB -o "w64/embedr.dll" embedr.c src/w64new/c.lib -lws2_32 -liphlpapi
+          & C:\R\bin\x64\R.exe CMD SHLIB -o "w64/embedr.dll" embedr.c src/w64new/q.lib -lws2_32 -liphlpapi
           if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Package distribution
