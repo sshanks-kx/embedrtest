@@ -40,9 +40,8 @@ jobs:
       - name: Build embedr.dll
         shell: pwsh
         run: |
-          $env:PATH = "C:\R\bin;C:\R\bin\x64;$env:PATH"
-          New-Item -ItemType Directory -Force -Path $env:Q_ARCH | Out-Null
-          & C:\R\bin\R.exe CMD SHLIB -o "$env:Q_ARCH/embedr.dll" embedr.c src/w64/q.a -lws2_32
+          New-Item -ItemType Directory -Force -Path w64 | Out-Null
+          & C:\R\bin\R.exe CMD SHLIB -o "w64/embedr.dll" embedr.c src/w64/q.a -lws2_32
           if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Package distribution
