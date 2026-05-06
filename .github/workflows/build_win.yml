@@ -40,9 +40,9 @@ jobs:
       - name: Build embedr.dll
         shell: pwsh
         run: |
-          $env:PATH = "$R_HOME\bin;$R_HOME\bin\x64;$env:PATH"
+          $env:PATH = "C:\R\bin;C:\R\bin\x64;$env:PATH"
           New-Item -ItemType Directory -Force -Path $env:Q_ARCH | Out-Null
-          & C:\R\bin\R.exe CMD SHLIB -o "$env:Q_ARCH/embedr.dll" embedr.c src/$env:Q_ARCH/q.a -lws2_32
+          & C:\R\bin\R.exe CMD SHLIB -o "$env:Q_ARCH/embedr.dll" embedr.c src/w64/q.a -lws2_32
           if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Package distribution
@@ -51,13 +51,13 @@ jobs:
           $version = "${{ github.ref_name }}" -replace '[\\/:*?"<>|]', '-'
 
           New-Item -ItemType Directory -Force -Path embedr | Out-Null
-          Copy-Item "$env:Q_ARCH" -Destination ".\embedr\$env:Q_ARCH" -Recurse
+          Copy-Item "w64" -Destination ".\embedr\w64" -Recurse
           Copy-Item rinit.q -Destination .\embedr
           Copy-Item rtest.q -Destination .\embedr
           Copy-Item LICENSE -Destination .\embedr\LICENSE.embedr
           Copy-Item README.md -Destination .\embedr\README.embedr
 
-          7z a "embedr_win$env:BITS-$version.zip" ".\embedr\*"
+          7z a "embedr_win64-$version.zip" ".\embedr\*"
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
