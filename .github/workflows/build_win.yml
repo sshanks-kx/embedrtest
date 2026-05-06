@@ -22,7 +22,7 @@ jobs:
       BITS: 64
       R_ARCH: x64
       Q_ARCH: w64
-      RHOME: C:\R\
+      R_HOME: C:\R\
 
     steps:
       - name: Check out repository
@@ -40,6 +40,7 @@ jobs:
         shell: cmd
         run: |
           echo Checking R installation...
+          echo R_HOME is: %R_HOME%
           for /f "delims=" %%i in ('R.exe RHOME') do set R_HOME=%%i
           echo R_HOME is: %R_HOME%
           set PATH=%R_HOME%\bin;%R_HOME%\bin\x64;%PATH%
