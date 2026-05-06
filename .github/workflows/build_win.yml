@@ -1,28 +1,13 @@
-name: Windows build
-
-on:
-  workflow_dispatch:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize, reopened]
-  release:
-    types: [created]
-
-permissions:
-  contents: write
-
 jobs:
   build-windows:
-    name: Windows 64-bit
+    name: Windows ${{ matrix.bits }}-bit
     runs-on: windows-latest
 
     env:
       BITS: 64
       R_ARCH: x64
       Q_ARCH: w64
-      R_HOME: C:\R
+      R_HOME: C:\R                    # Remove trailing backslash
 
     steps:
       - name: Check out repository
@@ -34,31 +19,37 @@ jobs:
           r-version: "4.5.3"
 
       - name: Verify R installation
-        shell: cmd
+        shell: pwsh
         run: |
-          echo Checking R installation...
-          echo R_HOME is: %R_HOME%
-          for /f "delims=" %%i in ('R.exe RHOME') do set R_HOME=%%i
-          echo R_HOME is: %R_HOME%
-          set PATH=%R_HOME%\bin;%R_HOME%\bin\x64;%PATH%
-          R.exe --version
-          if errorlevel 1 exit /b 1
-
-      - name: Show R installation
-        shell: cmd
-        run: |
-          echo Checking R installation...
-          set PATH=%R_HOME%\bin;%R_HOME%\bin\x64;%PATH%
-          R.exe --version
-          R.exe RHOME
+          $maxRetries = 5
+          $retryCount = 0
+          while ($retryCount -lt $maxRetries) {
+            try {
+              $R_HOME = & R.exe RHOME
+              if ($LASTEXITCODE -eq 0 -and $R_HOME) {
+                Write-Host "R_HOME: $R_HOME"
+                & R.exe --version
+                if ($LASTEXITCODE -eq 0) {
+                  Write-Host "R installation verified successfully"
+                  exit 0
+                }
+              }
+            } catch {
+              Write-Host "Attempt $($retryCount + 1) failed, retrying..."
+            }
+            $retryCount++
+            Start-Sleep -Seconds 2
+          }
+          throw "R installation verification failed after $maxRetries attempts"
 
       - name: Build embedr.dll
-        shell: cmd
+        shell: pwsh
         run: |
-          for /f "delims=" %%i in ('R.exe RHOME') do set R_HOME=%%i
-          set PATH=%R_HOME%\bin;%R_HOME%\bin\x64;%PATH%
-          mkdir %Q_ARCH%
-          R.exe CMD SHLIB -o %Q_ARCH%/embedr.dll embedr.c src/%Q_ARCH%/q.a -lws2_32
+          $R_HOME = & R.exe RHOME
+          $env:PATH = "$R_HOME\bin;$R_HOME\bin\x64;$env:PATH"
+          New-Item -ItemType Directory -Force -Path $env:Q_ARCH | Out-Null
+          & R.exe CMD SHLIB -o "$env:Q_ARCH/embedr.dll" embedr.c src/$env:Q_ARCH/q.a -lws2_32
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Package distribution
         shell: pwsh
