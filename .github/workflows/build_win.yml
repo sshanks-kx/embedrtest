@@ -1,15 +1,14 @@
 name: Windows build
 
 on:
-  push:
-    branches:
-      - master
-    tags:
-      - "v*"
-  pull_request:
-    branches:
-      - master
   workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  release:
+    types: [created]
 
 permissions:
   contents: write
