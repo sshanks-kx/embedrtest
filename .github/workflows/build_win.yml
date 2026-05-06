@@ -37,13 +37,17 @@ jobs:
           $retryCount = 0
           while ($retryCount -lt $maxRetries) {
             try {
-              $R_HOME = & R.exe RHOME
-              if ($LASTEXITCODE -eq 0 -and $R_HOME) {
-                Write-Host "R_HOME: $R_HOME"
-                & R.exe --version
-                if ($LASTEXITCODE -eq 0) {
-                  Write-Host "R installation verified successfully"
-                  exit 0
+              $R_EXE = "C:\R\bin\R.exe"
+              if (Test-Path $R_EXE) {
+                $R_HOME = & $R_EXE RHOME
+                if ($LASTEXITCODE -eq 0 -and $R_HOME) {
+                  Write-Host "R_HOME: $R_HOME"
+                  & $R_EXE --version
+                  if ($LASTEXITCODE -eq 0) {
+                    Write-Host "R installation verified successfully"
+                    $env:R_HOME = $R_HOME
+                    exit 0
+                  }
                 }
               }
             } catch {
