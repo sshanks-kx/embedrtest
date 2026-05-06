@@ -40,7 +40,8 @@ jobs:
         shell: cmd
         run: |
           echo Checking R installation...
-          dir C:\R\bin 2>nul || echo C:\R\bin not found
+          for /f "delims=" %%i in ('R.exe RHOME') do set R_HOME=%%i
+          echo R_HOME is: %R_HOME%
           set PATH=%R_HOME%\bin;%R_HOME%\bin\x64;%PATH%
           R.exe --version
           if errorlevel 1 exit /b 1
