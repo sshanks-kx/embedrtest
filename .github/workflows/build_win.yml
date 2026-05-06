@@ -18,21 +18,10 @@ jobs:
     name: Windows ${{ matrix.bits }}-bit
     runs-on: windows-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - bits: 64
-            r_arch: x64
-            q_arch: w64
-          - bits: 32
-            r_arch: i386
-            q_arch: w32
-
     env:
-      BITS: ${{ matrix.bits }}
-      R_ARCH: ${{ matrix.r_arch }}
-      Q_ARCH: ${{ matrix.q_arch }}
+      BITS: 64
+      R_ARCH: x64
+      Q_ARCH: w64
       RHOME: C:\R\
 
     steps:
@@ -53,7 +42,6 @@ jobs:
           echo Checking R installation...
           dir C:\R\bin 2>nul || echo C:\R\bin not found
           set PATH=%R_HOME%\bin;%R_HOME%\bin\x64;%PATH%
-          where R.exe || (echo R.exe not found in PATH & exit /b 1)
           R.exe --version
           if errorlevel 1 exit /b 1
 
