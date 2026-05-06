@@ -38,10 +38,11 @@ jobs:
           dir C:\R\bin\x64
 
       - name: Build embedr.dll
-        shell: cmd
+        shell: pwsh
         run: |
-          mkdir w64
-          C:\R\bin\x64\R.exe CMD SHLIB -o w64/embedr.dll embedr.c -lws2_32 -Wl,--allow-shlib-undefined
+          New-Item -ItemType Directory -Force -Path w64 | Out-Null
+          & C:\R\bin\x64\R.exe CMD SHLIB -o "w64/embedr.dll" embedr.c src/w64new/q.a -lws2_32
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Package distribution
         shell: pwsh
