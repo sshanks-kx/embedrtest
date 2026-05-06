@@ -30,6 +30,13 @@ jobs:
         with:
           r-version: "4.4.2"
 
+      - name: Check
+        shell: cmd
+        run: |
+          dir C:\R
+          dir C:\R\bin
+          dir C:\R\bin\x86
+
       - name: Build embedr.dll
         shell: pwsh
         run: |
